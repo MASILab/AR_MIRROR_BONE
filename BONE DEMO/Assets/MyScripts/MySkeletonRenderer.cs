@@ -73,6 +73,7 @@ public class MySkeletonRenderer : MonoBehaviour
     private Astra.JointType selectionJointTypeA = Astra.JointType.LeftHand;     //use which joint(s) type as your selectionJoint
     private Astra.JointType selectionJointTypeB = Astra.JointType.RightHand;
     public GameObject SelectionJointPrefab;
+    public static string selectedBoneName = "";
 
     private float baseSpineX = 0, leftHipX = 0, shoulderSpineY = 0, neckY = 0;
     private float horizontalError = 0, verticalError = 0;
@@ -302,6 +303,7 @@ public class MySkeletonRenderer : MonoBehaviour
                         skeletonBone.transform.localScale = new Vector3(skeletonBone.transform.localScale.x * SelectBoneMultiplyFactor,
                                                                         magnitude * SelectBoneMultiplyFactor,
                                                                         skeletonBone.transform.localScale.z * SelectBoneMultiplyFactor);
+                        selectedBoneName = GetJointName(startJoint) + "_" + GetJointName(endJoint);
                     }
 
                     if ((selectionJointTypeB != startJoint.Type && selectionJointTypeB != endJoint.Type)
@@ -310,6 +312,7 @@ public class MySkeletonRenderer : MonoBehaviour
                         skeletonBone.transform.localScale = new Vector3(skeletonBone.transform.localScale.x * SelectBoneMultiplyFactor,
                                                                         magnitude * SelectBoneMultiplyFactor,
                                                                         skeletonBone.transform.localScale.z * SelectBoneMultiplyFactor);
+                        selectedBoneName = GetJointName(startJoint) + "_" + GetJointName(endJoint);
                     }
                     #endregion
                 }
@@ -369,6 +372,10 @@ public class MySkeletonRenderer : MonoBehaviour
         return x >= a - error && x <= b + error;
     }
 
+    private string GetJointName(Astra.Joint joint)
+    {
+        return (joint.ToString().Split(' ')[1]).Split(',')[0];
+    }
     #endregion
 
     private void UpdateHandPoseVisual(GameObject skeletonJoint, Astra.HandPose pose)
