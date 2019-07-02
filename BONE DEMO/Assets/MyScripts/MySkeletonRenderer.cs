@@ -15,10 +15,8 @@ public class MySkeletonRenderer : MonoBehaviour
     private Dictionary<int, GameObject[]> _bodySkeletons;
     private Dictionary<int, GameObject[]> _bodyBones;
 
-    private readonly Vector3 NormalPoseScale = new Vector3(1, 1, 1);
-    private readonly Vector3 GripPoseScale = new Vector3(0.5f, 0.5f, 0.5f);
-
-    private readonly float TestBoneThickness = 0.5f;
+    private readonly Vector3 NormalPoseScale = new Vector3(0.1f, 0.1f, 0.1f);
+    private readonly Vector3 GripPoseScale = new Vector3(0.2f, 0.2f, 0.2f);
 
     public GameObject JointPrefab;
     public Transform JointRoot;
@@ -62,6 +60,24 @@ public class MySkeletonRenderer : MonoBehaviour
     public GameObject Prefab_LeftHand;
     public GameObject Prefab_RightHand;
 
+    private readonly float TestBoneThickness = 0.5f;
+
+    #endregion
+
+    #region Selection joints
+
+    /* Selection joints
+     * Current Design: right and left hands as selection joints
+     * Switch between modes (Bone / Muscle / Joint)
+     */
+    private Astra.JointType selectionJointTypeA = Astra.JointType.LeftHand;     //use which joint(s) type as your selectionJoint
+    private Astra.JointType selectionJointTypeB = Astra.JointType.RightHand;
+    public GameObject SelectionJointPrefab;
+
+    private float baseSpineX = 0, leftHipX = 0, shoulderSpineY = 0, neckY = 0;
+    private float horizontalError = 0, verticalError = 0;
+
+    private readonly float SelectBoneMultiplyFactor = 3f;
     #endregion
 
     void Start()
@@ -115,7 +131,15 @@ public class MySkeletonRenderer : MonoBehaviour
                 joints = new GameObject[body.Joints.Length];
                 for (int i = 0; i < joints.Length; i++)
                 {
-                    joints[i] = (GameObject)Instantiate(JointPrefab, Vector3.zero, Quaternion.identity);
+                    var bodyJoint = body.Joints[i];
+                    if (bodyJoint.Type == selectionJointTypeA || bodyJoint.Type == selectionJointTypeB)
+                    {
+                        joints[i] = (GameObject)Instantiate(SelectionJointPrefab, Vector3.zero, Quaternion.identity);
+                    }
+                    else
+                    {
+                        joints[i] = (GameObject)Instantiate(JointPrefab, Vector3.zero, Quaternion.identity);
+                    }
                     joints[i].transform.SetParent(JointRoot);
                 }
                 _bodySkeletons.Add(body.Id, joints);
@@ -195,6 +219,7 @@ public class MySkeletonRenderer : MonoBehaviour
                     skeletonJoint.transform.rotation =
                         Quaternion.LookRotation(jointForward, jointUp);
 
+                    
                     if (bodyJoint.Type == Astra.JointType.LeftHand)
                     {
                         UpdateHandPoseVisual(skeletonJoint, body.HandPoseInfo.LeftHand);
@@ -203,6 +228,7 @@ public class MySkeletonRenderer : MonoBehaviour
                     {
                         UpdateHandPoseVisual(skeletonJoint, body.HandPoseInfo.RightHand);
                     }
+                    
 
 
                 }
@@ -211,6 +237,19 @@ public class MySkeletonRenderer : MonoBehaviour
                     if (skeletonJoint.activeSelf) skeletonJoint.SetActive(false);
                 }
             }
+
+            #region calculate errors
+            // calculate the horizontal/vertical Error for selection
+            if (baseSpineX != 0 && leftHipX != 0)
+            {
+                horizontalError = 0.5f * Mathf.Abs(baseSpineX - leftHipX);
+            }
+            if (neckY != 0 && shoulderSpineY != 0)
+            {
+                verticalError = 0.5f * Mathf.Abs(neckY - shoulderSpineY);
+            }
+
+            #endregion
 
             //Render the bones
             for (int i = 0; i < Bones.Length; i++)
@@ -231,6 +270,8 @@ public class MySkeletonRenderer : MonoBehaviour
                         skeletonBone.SetActive(true);
                     }
 
+
+                    #region Draw all bones
                     Vector3 startPosition = joints[startIndex].transform.position;
                     Vector3 endPosition = joints[endIndex].transform.position;
 
@@ -250,6 +291,27 @@ public class MySkeletonRenderer : MonoBehaviour
                     {
                         skeletonBone.transform.localScale = new Vector3(TestBoneThickness * 1.2f, magnitude, TestBoneThickness * 1.2f);
                     }
+                    #endregion
+
+                    #region Update selected bones
+                    //Rescale the selected bones
+                    if ((selectionJointTypeA != startJoint.Type && selectionJointTypeA != endJoint.Type)
+                         && (withinRange(joints[FindJointIndex(body, selectionJointTypeA)].transform.position, startPosition, endPosition)))
+                    {
+                        
+                        skeletonBone.transform.localScale = new Vector3(skeletonBone.transform.localScale.x * SelectBoneMultiplyFactor,
+                                                                        magnitude * SelectBoneMultiplyFactor,
+                                                                        skeletonBone.transform.localScale.z * SelectBoneMultiplyFactor);
+                    }
+
+                    if ((selectionJointTypeB != startJoint.Type && selectionJointTypeB != endJoint.Type)
+                         && (withinRange(joints[FindJointIndex(body, selectionJointTypeB)].transform.position, startPosition, endPosition)))
+                    {
+                        skeletonBone.transform.localScale = new Vector3(skeletonBone.transform.localScale.x * SelectBoneMultiplyFactor,
+                                                                        magnitude * SelectBoneMultiplyFactor,
+                                                                        skeletonBone.transform.localScale.z * SelectBoneMultiplyFactor);
+                    }
+                    #endregion
                 }
                 else
                 {
@@ -283,6 +345,28 @@ public class MySkeletonRenderer : MonoBehaviour
     {
         float angle = radians * 180 / (float)Mathf.PI;
         return angle;
+    }
+
+    private bool withinRange(Vector3 posJ, Vector3 posA, Vector3 posB)
+    {
+        if (withinPoints(posJ.x, posA.x, posB.x, horizontalError) && withinPoints(posJ.y, posA.y, posB.y, verticalError))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private bool withinPoints(float x, float a, float b, float error = 0)
+    {
+        float tmp;
+        if (a > b)
+        {
+            tmp = a; a = b; b = tmp;
+        }
+        return x >= a - error && x <= b + error;
     }
 
     #endregion

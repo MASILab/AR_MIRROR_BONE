@@ -388,7 +388,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 529061037}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
   m_Name: 
@@ -622,11 +622,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1420769202}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ab1e28db538c1c4ab2320791c2373af, type: 3}
+  m_Script: {fileID: 11500000, guid: 42daed5d0904f34429c217dc117c35c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   AutoRequestAndroidUsbPermission: 1
-  TimeText: {fileID: 1728770726}
+  TimeText: {fileID: 0}
   ToggleDebugText: {fileID: 0}
   NewDepthFrameEvent:
     m_PersistentCalls:
@@ -866,7 +866,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1728770723}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
   m_Name: 
