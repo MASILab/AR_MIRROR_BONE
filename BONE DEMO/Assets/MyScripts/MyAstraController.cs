@@ -12,6 +12,8 @@ public class MyAstraController : AstraController {
 
     private void Awake()
     {
+        Screen.orientation = ScreenOrientation.Portrait;
+
         //Initilialize the camera
         AstraUnityContext.Instance.Initialize();
 
