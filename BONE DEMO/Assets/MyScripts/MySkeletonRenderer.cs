@@ -285,7 +285,7 @@ public class MySkeletonRenderer : MonoBehaviour
                     //Scale the head
                     if (startJoint.Type == Astra.JointType.Neck)
                     {
-                        skeletonBone.transform.localScale = new Vector3(TestBoneThickness * 0.2f, magnitude, TestBoneThickness * 0.2f);
+                        skeletonBone.transform.localScale = new Vector3(TestBoneThickness * 0.3f, magnitude * 1.2f, TestBoneThickness * 0.3f);
                     }
                     //Scale other bones
                     else
