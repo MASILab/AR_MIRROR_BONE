@@ -5,16 +5,16 @@ using UnityEngine;
 public class MyDiagramController : MonoBehaviour {
     
 
-    public GameObject BN_Left_Forearm;
-    public GameObject BN_Right_Forearm;
-    public GameObject BN_ShoulderSpine_MidSpine;
-    public GameObject BN_MidSpine_BaseSpine;
-    public GameObject BN_Left_Hip;
-    public GameObject BN_Right_Hip;
-    public GameObject BN_Left_UpperLeg;
-    public GameObject BN_Right_UpperLeg;
-    public GameObject BN_Left_LowerLeg;
-    public GameObject BN_Right_LowerLeg;
+    public GameObject Left_Forearm;
+    public GameObject Right_Forearm;
+    public GameObject ShoulderSpine_MidSpine;
+    public GameObject MidSpine_BaseSpine;
+    public GameObject Left_Hip;
+    public GameObject Right_Hip;
+    public GameObject Left_UpperLeg;
+    public GameObject Right_UpperLeg;
+    public GameObject Left_LowerLeg;
+    public GameObject Right_LowerLeg;
 
 	
 	//Update is called once per frame
@@ -27,34 +27,34 @@ public class MyDiagramController : MonoBehaviour {
         switch (MySkeletonRenderer.selectedBoneName)
         {
             case "LeftElbow_LeftWrist":
-                display(BN_Left_Forearm);
+                display(Left_Forearm);
                 break;
             case "RightElbow_RightWrist":
-                display(BN_Right_Forearm);
+                display(Right_Forearm);
                 break;
             case "MidSpine_ShoulderSpine":
-                display(BN_ShoulderSpine_MidSpine);
+                display(ShoulderSpine_MidSpine);
                 break;
             case "BaseSpine_MidSpine":
-                display(BN_MidSpine_BaseSpine);
+                display(MidSpine_BaseSpine);
                 break;
             case "BaseSpine_LeftHip":
-                display(BN_Left_Hip);
+                display(Left_Hip);
                 break;
             case "BaseSpine_RightHip":
-                display(BN_Right_Hip);
+                display(Right_Hip);
                 break;
             case "LeftHip_LeftKnee":
-                display(BN_Left_UpperLeg);
+                display(Left_UpperLeg);
                 break;
             case "LeftKnee_LeftFoot":
-                display(BN_Left_LowerLeg);
+                display(Left_LowerLeg);
                 break;
             case "RightHip_RightKnee":
-                display(BN_Right_UpperLeg);
+                display(Right_UpperLeg);
                 break;
             case "RightKnee_RightFoot":
-                display(BN_Right_LowerLeg);
+                display(Right_LowerLeg);
                 break;
             default:
                 display(null);
@@ -76,15 +76,15 @@ public class MyDiagramController : MonoBehaviour {
 
     private void hideAllBones()
     {
-        BN_Left_Forearm.SetActive(false);
-        BN_Right_Forearm.SetActive(false);
-        BN_ShoulderSpine_MidSpine.SetActive(false);
-        BN_MidSpine_BaseSpine.SetActive(false);
-        BN_Left_Hip.SetActive(false);
-        BN_Right_Hip.SetActive(false);
-        BN_Left_UpperLeg.SetActive(false);
-        BN_Right_UpperLeg.SetActive(false);
-        BN_Left_LowerLeg.SetActive(false);
-        BN_Right_LowerLeg.SetActive(false);
+        Left_Forearm.SetActive(false);
+        Right_Forearm.SetActive(false);
+        ShoulderSpine_MidSpine.SetActive(false);
+        MidSpine_BaseSpine.SetActive(false);
+        Left_Hip.SetActive(false);
+        Right_Hip.SetActive(false);
+        Left_UpperLeg.SetActive(false);
+        Right_UpperLeg.SetActive(false);
+        Left_LowerLeg.SetActive(false);
+        Right_LowerLeg.SetActive(false);
     }
 }

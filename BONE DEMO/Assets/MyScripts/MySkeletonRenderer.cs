@@ -60,7 +60,8 @@ public class MySkeletonRenderer : MonoBehaviour
     public GameObject Prefab_LeftHand;
     public GameObject Prefab_RightHand;
 
-    private readonly float TestBoneThickness = 0.5f;
+    private readonly float TestBoneThickness = 1f;
+    private readonly float HeadBoneThickness = 0.15f;
 
     #endregion
 
@@ -220,7 +221,12 @@ public class MySkeletonRenderer : MonoBehaviour
                     skeletonJoint.transform.rotation =
                         Quaternion.LookRotation(jointForward, jointUp);
 
+                    if (bodyJoint.Type != Astra.JointType.LeftHand && bodyJoint.Type != Astra.JointType.RightHand)
+                    {
+                        skeletonJoint.transform.localScale = new Vector3(0.001f, 0.001f, 0.001f);
+                    }
                     
+                    /*
                     if (bodyJoint.Type == Astra.JointType.LeftHand)
                     {
                         UpdateHandPoseVisual(skeletonJoint, body.HandPoseInfo.LeftHand);
@@ -229,6 +235,7 @@ public class MySkeletonRenderer : MonoBehaviour
                     {
                         UpdateHandPoseVisual(skeletonJoint, body.HandPoseInfo.RightHand);
                     }
+                    */
                     
 
 
@@ -285,12 +292,12 @@ public class MySkeletonRenderer : MonoBehaviour
                     //Scale the head
                     if (startJoint.Type == Astra.JointType.Neck)
                     {
-                        skeletonBone.transform.localScale = new Vector3(TestBoneThickness * 0.3f, magnitude * 1.2f, TestBoneThickness * 0.3f);
+                        skeletonBone.transform.localScale = new Vector3(HeadBoneThickness, magnitude * 1.2f, HeadBoneThickness);
                     }
                     //Scale other bones
                     else
                     {
-                        skeletonBone.transform.localScale = new Vector3(TestBoneThickness * 1.2f, magnitude, TestBoneThickness * 1.2f);
+                        skeletonBone.transform.localScale = new Vector3(TestBoneThickness, magnitude, TestBoneThickness);
                     }
                     #endregion
 
