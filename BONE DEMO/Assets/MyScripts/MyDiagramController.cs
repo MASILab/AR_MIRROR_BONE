@@ -15,6 +15,8 @@ public class MyDiagramController : MonoBehaviour {
     public GameObject Right_UpperLeg;
     public GameObject Left_LowerLeg;
     public GameObject Right_LowerLeg;
+    public GameObject Right_Upperarm;
+    public GameObject Left_Upperarm;
 
 	
 	//Update is called once per frame
@@ -26,6 +28,12 @@ public class MyDiagramController : MonoBehaviour {
     {
         switch (MySkeletonRenderer.selectedBoneName)
         {
+            case "LeftShoulder_LeftElbow":
+                display(Left_Upperarm);
+                break;
+            case "RightShoulder_RightElbow":
+                display(Right_Upperarm);
+                break;
             case "LeftElbow_LeftWrist":
                 display(Left_Forearm);
                 break;
@@ -76,6 +84,8 @@ public class MyDiagramController : MonoBehaviour {
 
     private void hideAllBones()
     {
+        Right_Upperarm.SetActive(false);
+        Left_Upperarm.SetActive(false);
         Left_Forearm.SetActive(false);
         Right_Forearm.SetActive(false);
         ShoulderSpine_MidSpine.SetActive(false);
