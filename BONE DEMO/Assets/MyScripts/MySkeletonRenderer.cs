@@ -6,6 +6,8 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Collections;
+using UnityEngine.Networking;
 
 public class MySkeletonRenderer : MonoBehaviour
 {
@@ -60,8 +62,8 @@ public class MySkeletonRenderer : MonoBehaviour
     public GameObject Prefab_LeftHand;
     public GameObject Prefab_RightHand;
 
-    private readonly float TestBoneThickness = 1f;
-    private readonly float HeadBoneThickness = 0.15f;
+    private readonly float TestBoneThickness = 1.5f;
+    private readonly float HeadBoneThickness = 0.25f;
 
     #endregion
 
@@ -125,6 +127,7 @@ public class MySkeletonRenderer : MonoBehaviour
 
             GameObject[] joints;
             GameObject[] bones;
+            bool newBody = false;
 
 
             if (!_bodySkeletons.ContainsKey(body.Id) && !_bodyBones.ContainsKey(body.Id))
@@ -171,11 +174,19 @@ public class MySkeletonRenderer : MonoBehaviour
 
                 }
                 _bodyBones.Add(body.Id, bones);
+
+                newBody = true;
             }
             else
             {
                 joints = _bodySkeletons[body.Id];
                 bones = _bodyBones[body.Id];
+            }
+
+            //Log if a new body is detected
+            if (newBody)
+            {
+                StartCoroutine(GetRequest("https://docs.google.com/forms/d/e/1FAIpQLSe9t2ffOIQF2zNo-W3mGsA0jW0Fpba65AW1vk8C8YI9o1Akyg/formResponse?entry.365241968=BONEDEMO&fvv=1"));
             }
 
             //Render the joints
@@ -191,10 +202,12 @@ public class MySkeletonRenderer : MonoBehaviour
                         skeletonJoint.SetActive(true);
                     }
 
+                    
                     skeletonJoint.transform.localPosition =
                         new Vector3(bodyJoint.WorldPosition.X / 1000f,
                                     bodyJoint.WorldPosition.Y / 1000f,
                                     bodyJoint.WorldPosition.Z / 1000f);
+                   
 
                     //skel.Joints[i].Orient.Matrix:
                     // 0, 			1,	 		2,
@@ -221,10 +234,10 @@ public class MySkeletonRenderer : MonoBehaviour
                     skeletonJoint.transform.rotation =
                         Quaternion.LookRotation(jointForward, jointUp);
 
-                    if (bodyJoint.Type != Astra.JointType.LeftHand && bodyJoint.Type != Astra.JointType.RightHand)
-                    {
+                    //if (bodyJoint.Type != Astra.JointType.LeftHand && bodyJoint.Type != Astra.JointType.RightHand)
+                    //{
                         skeletonJoint.transform.localScale = new Vector3(0.001f, 0.001f, 0.001f);
-                    }
+                    //}
                     
                     /*
                     if (bodyJoint.Type == Astra.JointType.LeftHand)
@@ -293,6 +306,10 @@ public class MySkeletonRenderer : MonoBehaviour
                     if (startJoint.Type == Astra.JointType.Neck)
                     {
                         skeletonBone.transform.localScale = new Vector3(HeadBoneThickness, magnitude * 1.2f, HeadBoneThickness);
+                    }
+                    else if (startJoint.Type == Astra.JointType.LeftWrist || startJoint.Type == Astra.JointType.RightWrist)
+                    {
+                        skeletonBone.transform.localScale = new Vector3(0.001f, 0.001f, 0.001f);
                     }
                     //Scale other bones
                     else
@@ -382,6 +399,27 @@ public class MySkeletonRenderer : MonoBehaviour
     private string GetJointName(Astra.Joint joint)
     {
         return (joint.ToString().Split(' ')[1]).Split(',')[0];
+    }
+
+    IEnumerator GetRequest(string uri)
+    {
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
+        {
+            // Request and wait for the desired page.
+            yield return webRequest.SendWebRequest();
+
+            string[] pages = uri.Split('/');
+            int page = pages.Length - 1;
+
+            if (webRequest.isNetworkError)
+            {
+                Debug.Log(pages[page] + ": Error: " + webRequest.error);
+            }
+            else
+            {
+                Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
+            }
+        }
     }
     #endregion
 

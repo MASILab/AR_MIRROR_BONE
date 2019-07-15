@@ -12,7 +12,7 @@ public class MyAstraController : AstraController {
 
     private void Awake()
     {
-        Screen.orientation = ScreenOrientation.Portrait;
+        Screen.SetResolution(720, 1280, true);
 
         //Initilialize the camera
         AstraUnityContext.Instance.Initialize();
